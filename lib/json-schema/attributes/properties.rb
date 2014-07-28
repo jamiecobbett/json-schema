@@ -4,12 +4,12 @@ module JSON
       def self.validate(current_schema, data, fragments, processor, validator, options = {})
         if data.is_a?(Hash)
           current_schema.schema['properties'].each do |property,property_schema|
-            if (property_schema['required'] || options[:strict] == true) && !data.has_key?(property.to_s) && !data.has_key?(property.to_sym)
+            if (property_schema['required'] || options[:strict] == true) && !data.has_key?(property)
               message = "The property '#{build_fragment(fragments)}' did not contain a required property of '#{property}'"
               validation_error(processor, message, fragments, current_schema, self, options[:record_errors])
             end
 
-            if data.has_key?(property.to_s) || data.has_key?(property.to_sym)
+            if data.has_key?(property)
               schema = JSON::Schema.new(property_schema,current_schema.uri,validator)
               fragments << property.to_s
               schema.validate(data[property.to_s],fragments,processor,options)
@@ -30,9 +30,9 @@ module JSON
                   end
                 end
 
-                !current_schema.schema['properties'].has_key?(k.to_s) && !current_schema.schema['properties'].has_key?(k.to_sym) && !match
+                !current_schema.schema['properties'].has_key?(k) && !match
               else
-                !current_schema.schema['properties'].has_key?(k.to_s) && !current_schema.schema['properties'].has_key?(k.to_sym)
+                !current_schema.schema['properties'].has_key?(k)
               end
             end
 
