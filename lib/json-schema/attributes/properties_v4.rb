@@ -4,15 +4,6 @@ module JSON
       def self.validate(current_schema, data, fragments, processor, validator, options = {})
         if data.is_a?(Hash)
           current_schema.schema['properties'].each do |property,property_schema|
-            if !data.has_key?(property.to_s) &&
-               !data.has_key?(property.to_sym) &&
-               property_schema['default'] &&
-               !property_schema['readonly'] &&
-               options[:insert_defaults]
-              default = property_schema['default']
-              data[property.to_s] = (default.is_a?(Hash) ? default.clone : default)
-            end
-
             if (options[:strict] == true && !data.has_key?(property.to_s) && !data.has_key?(property.to_sym))
               message = "The property '#{build_fragment(fragments)}' did not contain a required property of '#{property}'"
               validation_error(processor, message, fragments, current_schema, self, options[:record_errors])

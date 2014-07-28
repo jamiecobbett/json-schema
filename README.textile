@@ -221,62 +221,6 @@ data = {
 JSON::Validator.validate(schema, data, :validate_schema => true)
 </pre>
 
-h3. Validate a JSON object against a JSON schema object, while inserting default values from the schema
-
-With the :insert_defaults option set to true any missing property that has a
-default value specified in the schema will be inserted into the validated data. The inserted default value is validated hence catching a schema that specifies an invalid default value.
-
-<pre>
-require 'rubygems'
-require 'json-schema'
-
-schema = {
-  "type" => "object",
-  "required" => ["a"],
-  "properties" => {
-    "a" => {"type" => "integer", "default" => 42},
-    "b" => {"type" => "integer"}
-  }
-}
-
-# Would not normally validate because "a" is missing and required by schema,
-# but "default" option allows insertion of valid default.
-data = {
-  "b" => 5
-}
-
-JSON::Validator.validate(schema, data)
-# false
-
-JSON::Validator.validate(schema, data, :insert_defaults => true)
-# true
-# data = {
-#   "a" => 42,
-#   "b" => 5
-# }
-
-</pre>
-h3. Validate an object against a JSON Schema Draft 2 schema
-
-<pre>
-require 'rubygems'
-require 'json-schema'
-
-schema = {
-  "type" => "object",
-  "properties" => {
-    "a" => {"type" => "integer", "optional" => true}
-  }
-}
-
-data = {
-  "a" => 5
-}
-
-JSON::Validator.validate(schema, data, :version => :draft2)
-</pre>
-
-
 h3. Extend an existing schema and validate against it
 
 For this example, we are going to extend the "JSON Schema Draft 3":http://tools.ietf.org/html/draft-zyp-json-schema-03 specification by adding a 'bitwise-and' property for validation.
