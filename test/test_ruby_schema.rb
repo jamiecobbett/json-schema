@@ -65,4 +65,21 @@ class RubySchemaTest < Test::Unit::TestCase
 
     assert(JSON::Validator.validate(schema, data, :validate_schema => true))
   end
+
+  def test_additional_properties_with_symbols_and_strings
+    schema = {
+      type: 'object',
+      required: ["a"],
+      properties: {
+        "a" => {type: "integer", default: 42}
+      },
+      additionalProperties: false
+    }
+
+    data = {
+      a: 5
+    }
+
+    assert(JSON::Validator.validate(schema, data))
+  end
 end

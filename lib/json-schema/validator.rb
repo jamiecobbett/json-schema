@@ -373,9 +373,9 @@ module JSON
 
 
     class << self
-      def validate(schema, data,opts={})
+      def validate(schema, data, opts={})
         begin
-          validator = JSON::Validator.new(schema, data, opts)
+          validator = JSON::Validator.new(JSON::Schema.add_indifferent_access(schema), JSON::Schema.add_indifferent_access(data), opts)
           validator.validate
           return true
         rescue JSON::Schema::ValidationError, JSON::Schema::SchemaError

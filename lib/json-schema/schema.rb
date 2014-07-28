@@ -41,25 +41,20 @@ module JSON
     end
 
     def self.add_indifferent_access(schema)
-      if schema.is_a?(Hash)
-        schema.default_proc = proc do |hash,key|
-          if hash.has_key?(key)
-            hash[key]
-          else
-            key = case key
-            when Symbol then key.to_s
-            when String then key.to_sym
-            end
-            hash.has_key?(key) ? hash[key] : nil
-          end
+      deep_stringify_keys(schema)
+    end
+
+    # support methods for deep transforming nested hashes and arrays
+    def self.deep_stringify_keys(object)
+      case object
+      when Hash
+        object.each_with_object({}) do |(key, value), result|
+          result[key.to_s] = deep_stringify_keys(value)
         end
-        schema.keys.each do |key|
-          add_indifferent_access(schema[key])
-        end
-      elsif schema.is_a?(Array)
-        schema.each do |schema_item|
-          add_indifferent_access(schema_item)
-        end
+      when Array
+        object.map {|e| deep_stringify_keys(e) }
+      else
+        object
       end
     end
 
